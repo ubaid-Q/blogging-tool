@@ -1,0 +1,27 @@
+<nav class="bg-white w-full shadow-lg">
+    <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+        <div class="text-xl font-bold text-gray-800">
+            <%= author.blog_title %>
+        </div>
+        <div class="relative">
+            <button class="flex items-center focus:outline-none" onclick="toggleDropdown()">
+                <i class="fas fa-user-circle text-2xl text-gray-800 mr-2"></i>
+                <span class="font-semibold text-gray-800">
+                    <%= author.name %>
+                </span>
+                <i class="fas fa-caret-down text-gray-600 ml-1"></i>
+            </button>
+            <div id="dropdownMenu" class="hidden absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg">
+                <a href="/authors/settings" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Settings</a>
+                <a href="/auth/logout" class="block px-4 py-2 text-gray-800 hover:bg-gray-100">Logout</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<script>
+    function toggleDropdown() {
+        const dropdownMenu = document.getElementById('dropdownMenu');
+        dropdownMenu.classList.toggle('hidden');
+    }
+</script>

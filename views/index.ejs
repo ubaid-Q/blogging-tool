@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Main Home Page</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <style>
+      body {
+        background-color: #f0f0f0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+
+      .container {
+        text-align: center;
+      }
+
+      .link {
+        display: inline-block;
+        margin: 10px;
+        padding: 12px 24px;
+        background-color: #4a90e2;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+        transition: background-color 0.3s ease;
+      }
+
+      .link:hover {
+        background-color: #357bd8;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h1 class="text-3xl font-bold mb-6">Welcome to <%= settings.blog_title %></h1>
+      <p class="mb-6">Choose your role:</p>
+      <a href="/authors" class="link">Author Home Page</a>
+      <a href="/articles" class="link">Reader Home Page</a>
+    </div>
+  </body>
+</html>

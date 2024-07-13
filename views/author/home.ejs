@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Author Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <style>
+    .article-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .article-meta p {
+      margin: 0;
+      font-size: 0.875rem;
+      line-height: 1.25rem;
+    }
+
+    @media (max-width: 768px) {
+      .article-meta {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-gray-100 min-h-screen flex flex-col items-center">
+  <!-- Navbar -->
+
+  <%- include('../partials/navbar') %>
+
+
+    <div class="w-full max-w-4xl bg-white rounded-lg shadow-lg p-8 mt-8">
+      <h1 class="text-4xl font-bold text-center mb-6">Author Dashboard</h1>
+
+      <div class="flex justify-between items-center mb-8">
+        <form action="/authors/articles/new" method="POST">
+          <button type="submit"
+            class="bg-blue-600 hover:bg-blue-800 text-white font-semibold py-2 px-6 rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-104">
+            Create New Draft
+          </button>
+        </form>
+      </div>
+
+      <h2 class="text-2xl font-semibold mb-4">Your Published Articles</h2>
+      <ul class="space-y-6">
+        <% publishedArticles.forEach(article=> { %>
+          <li class="bg-gray-50 p-6 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-104">
+            <h3 class="text-xl font-bold mb-3">
+              <%= article.title %>
+            </h3>
+            <div class="article-meta">
+              <p><i class="fas fa-calendar-alt mr-2"></i>Created Date: <%= new
+                  Date(article.created_at).toLocaleString("en-US") %>
+              </p>
+              <p><i class="fas fa-calendar-check mr-2"></i>Published Date: <%= new
+                  Date(article.published_at).toLocaleString("en-US") %>
+              </p>
+              <p><i class="fas fa-edit mr-2"></i>Last Modified: <%= new Date(article.updated_at).toLocaleString("en-US")
+                  %>
+              </p>
+              <p><i class="fas fa-eye mr-2"></i>Views: <%= article.views || 0 %>
+              </p>
+              <p><i class="fas fa-thumbs-up mr-2"></i>Likes: <%= article.likes || 0 %>
+              </p>
+            </div>
+            <div class="flex space-x-4 mt-4">
+              <a href="/authors/articles/<%= article.id %>/edit"
+                class="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-104">
+                <i class="fas fa-edit mr-2"></i>Edit
+              </a>
+              <form action="/authors/articles/<%= article.id %>?_method=DELETE" method="POST" class="inline">
+                <button type="submit"
+                  class="flex items-center bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-104">
+                  <i class="fas fa-trash mr-2"></i>Delete
+                </button>
+              </form>
+              <a href="/readers/articles/<%= article.id %>"
+                class="flex items-center bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-104">
+                <i class="fas fa-share mr-2"></i>Share
+              </a>
+            </div>
+          </li>
+          <% }); %>
+      </ul>
+
+      <h2 class="text-2xl font-semibold mt-10 mb-4">Your Draft Articles</h2>
+      <ul class="space-y-6">
+        <% draftArticles.forEach(article=> { %>
+          <li class="bg-gray-50 p-6 rounded-lg shadow-sm transition duration-300 ease-in-out transform hover:scale-104">
+            <h3 class="text-xl font-bold mb-3">
+              <%= article.title %>
+            </h3>
+            <div class="article-meta">
+              <p><i class="fas fa-calendar-alt mr-2"></i>Created Date: <%= new
+                  Date(article.created_at).toLocaleString("en-US") %>
+              </p>
+              <p><i class="fas fa-edit mr-2"></i>Last Modified: <%= new Date(article.updated_at).toLocaleString("en-US")
+                  %>
+              </p>
+            </div>
+            <div class="flex space-x-4 mt-4">
+              <a href="/authors/articles/<%= article.id %>/edit"
+                class="flex items-center bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-104">
+                <i class="fas fa-edit mr-2"></i>Edit
+              </a>
+              <form action="/authors/articles/<%= article.id %>/publish" method="POST" class="inline">
+                <button type="submit"
+                  class="flex items-center bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-104">
+                  <i class="fas fa-upload mr-2"></i>Publish
+                </button>
+              </form>
+              <form action="/authors/articles/<%= article.id %>?_method=DELETE" method="POST" class="inline">
+                <button type="submit"
+                  class="flex items-center bg-red-500 hover:bg-red-700 text-white font-semibold py-2 px-4 rounded-lg shadow transition duration-300 ease-in-out transform hover:scale-104">
+                  <i class="fas fa-trash mr-2"></i>Delete
+                </button>
+              </form>
+            </div>
+          </li>
+          <% }); %>
+      </ul>
+    </div>
+
+    <script>
+      function toggleDropdown() {
+        const dropdownMenu = document.getElementById("dropdownMenu");
+        dropdownMenu.classList.toggle("hidden");
+      }
+
+      function formatDateTime(dateTimeStr) {
+        if (!dateTimeStr) return ""; // Handle cases where dateTimeStr is undefined or null
+
+        const options = { year: "numeric", month: "short", day: "numeric", hour: "numeric", minute: "numeric", hour12: true };
+        return new Date(dateTimeStr).toLocaleString("en-US", options);
+      }
+    </script>
+</body>
+
+</html>

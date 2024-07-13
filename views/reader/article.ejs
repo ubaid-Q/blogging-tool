@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= article.title %> - Your Blog</title>
+  <!-- Tailwind CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+  <!-- Font Awesome CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  <!-- Date-Fns CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>
+
+  <style>
+    .comment-avatar {
+      width: 40px;
+      height: 40px;
+    }
+  </style>
+</head>
+<body class="bg-gray-100 font-sans leading-normal tracking-normal">
+  <!-- Navbar -->
+  <nav class="bg-white shadow-lg">
+    <div class="container mx-auto px-6 py-3">
+      <div class="flex items-center justify-between">
+        <!-- Blog Title and Author -->
+        <div>
+          <a class="text-gray-800 text-xl font-bold hover:text-gray-900" href="#"><%= settings.blog_title %></a>
+          <p class="text-gray-600 text-sm hidden md:block">By <%= settings.name %></p>
+        </div>
+        <!-- Menu Links -->
+        <div class="md:flex md:items-center">
+          <a class="text-gray-600 hover:text-gray-800 text-sm mx-3" href="/">Home</a>
+          <a class="text-gray-600 hover:text-gray-800 text-sm mx-3" href="/articles">Articles</a>
+          <a class="text-gray-600 hover:text-gray-800 text-sm mx-3" href="#">About</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Article Content -->
+  <div class="container mx-auto my-8 px-4 md:px-0">
+    <header class="text-center py-12">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4"><%= article.title %></h1>
+      <div class="text-gray-600 text-sm">
+        <i class="far fa-calendar-alt"></i> Published Date: <%= article.published_at %> | <i class="fas fa-user"></i> Author: <%= article.author_name %>
+      </div>
+    </header>
+
+    <div class="flex justify-center mb-8">
+      <article class="prose lg:prose-xl max-w-full"><%= article.content %></article>
+    </div>
+
+    <!-- Article Actions -->
+    <div class="flex flex-col md:flex-row items-center justify-center mb-8 space-y-4 md:space-y-0 md:space-x-4">
+      <button type="button" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md flex items-center space-x-1">
+        <i class="far fa-thumbs-up"></i>
+        <%= article.likes %> Likes
+      </button>
+      <form action="/articles/<%= article.id %>/like" method="POST" class="md:ml-4">
+        <button type="submit" class="bg-blue-200 hover:bg-blue-300 text-blue-800 px-4 py-2 rounded-md flex items-center space-x-1">
+          <i class="fas fa-thumbs-up"></i> Like
+        </button>
+      </form>
+    </div>
+
+    <!-- Comments Section -->
+    <section class="flex flex-col md:flex-row justify-center mb-8 space-y-8 md:space-y-0 md:space-x-8">
+      <div class="w-full lg:w-1/2">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-4">Comments <i class="far fa-comments"></i></h2>
+        <div id="commentsContainer" class="space-y-4">
+          <% comments.forEach(comment => { %>
+          <div class="bg-white p-4 rounded-lg shadow-md mb-4 flex items-start">
+            <img class="comment-avatar rounded-full mr-3" src="https://via.placeholder.com/50" alt="Avatar" />
+            <div>
+              <p class="text-gray-800 font-semibold"><%= comment.commenter_name %></p>
+              <p class="text-gray-600 text-sm">
+                <span class="comment-date" data-date="<%= comment.created_at %>"><%= comment.created_at %></span>
+              </p>
+              <p class="text-gray-700 mt-2"><%= comment.comment %></p>
+            </div>
+          </div>
+          <% }); %>
+        </div>
+      </div>
+      <div class="w-full lg:w-1/2">
+        <h2 class="text-2xl md:text-3xl font-bold text-center mb-4">Add Comment <i class="far fa-comment-dots"></i></h2>
+        <form action="/articles/<%= article.id %>/comment" method="POST" class="max-w-lg mx-auto">
+          <div class="mb-4">
+            <label for="commenterName" class="block text-gray-800 text-sm font-bold mb-2"><i class="fas fa-user"></i> Your Name:</label>
+            <input
+              type="text"
+              id="commenterName"
+              name="commenterName"
+              required
+              class="bg-gray-100 rounded-md px-4 py-2 w-full focus:outline-none focus:bg-white"
+              placeholder="Enter your name"
+            />
+          </div>
+          <div class="mb-4">
+            <label for="comment" class="block text-gray-800 text-sm font-bold mb-2"><i class="far fa-comment"></i> Your Comment:</label>
+            <textarea
+              id="comment"
+              name="comment"
+              rows="3"
+              required
+              class="bg-gray-100 rounded-md px-4 py-2 w-full focus:outline-none focus:bg-white"
+              placeholder="Enter your comment"
+            ></textarea>
+          </div>
+          <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md"><i class="far fa-paper-plane"></i> Submit Comment</button>
+        </form>
+      </div>
+    </section>
+
+    <!-- Back to Articles Link -->
+    <section class="flex justify-center mb-8">
+      <a href="/articles" class="text-blue-500 hover:underline"><i class="fas fa-arrow-left"></i> Back to Articles</a>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-gray-800 text-white text-center py-4 mt-12">
+    <div class="container mx-auto">
+      <p>&copy; 2024 Your Blog. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      var commentDates = document.querySelectorAll(".comment-date");
+      commentDates.forEach(function (dateElement) {
+        var date = dateElement.getAttribute("data-date");
+        var formattedDate = dateFns.formatDistanceToNow(new Date(date.replace(" ", "T") + "Z"), { addSuffix: true });
+        dateElement.textContent = formattedDate;
+      });
+    });
+  </script>
+</body>
+</html>

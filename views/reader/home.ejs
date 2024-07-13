@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Reader Home</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <!-- Font Awesome CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+    <!-- Date-Fns CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/date-fns@3.6.0/cdn.min.js"></script>
+
+    <style>
+      body {
+        font-family: "Roboto", sans-serif;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh; /* Set minimum height to fill the viewport */
+      }
+
+      .navbar {
+        background-color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        z-index: 10; /* Ensure navbar is on top */
+      }
+
+      .navbar a {
+        color: #4a5568;
+        transition: color 0.3s ease;
+      }
+
+      .navbar a:hover {
+        color: #1a202c;
+      }
+
+      .article-card {
+        background-color: #ffffff;
+        border-radius: 0.5rem;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .article-card:hover {
+        transform: translateY(-5px);
+      }
+
+      .article-title {
+        font-size: 1.75rem;
+        font-weight: 600;
+        color: #1a202c;
+        margin-bottom: 0.75rem;
+      }
+
+      .article-meta {
+        color: #4a5568;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .read-more-link {
+        color: #3182ce;
+        transition: color 0.3s ease;
+      }
+
+      .read-more-link:hover {
+        color: #2c5282;
+      }
+
+      .footer {
+        background-color: #2d3748;
+        color: #ffffff;
+        text-align: center;
+        padding: 1rem;
+        width: 100%;
+        bottom: 0;
+      }
+    </style>
+  </head>
+
+  <body class="bg-gray-100 flex flex-col">
+    <!-- Navbar -->
+    <nav class="navbar py-4">
+      <div class="container mx-auto px-6">
+        <div class="flex justify-between items-center">
+          <div>
+            <a href="#" class="text-gray-800 text-2xl font-bold hover:text-gray-900"><%= settings.blog_title %></a>
+            <p class="text-gray-600 text-sm">By <%= settings.name %></p>
+          </div>
+          <div class="hidden md:flex">
+            <a href="#" class="text-gray-600 hover:text-gray-800 text-sm mx-3">Home</a>
+            <a href="/articles" class="text-gray-600 hover:text-gray-800 text-sm mx-3">Articles</a>
+            <a href="#" class="text-gray-600 hover:text-gray-800 text-sm mx-3">About</a>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto mt-8 px-6 flex-grow">
+      <h1 class="text-3xl font-semibold text-center mb-6">Welcome to Reader Home</h1>
+      <div class="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <% articles.forEach(article => { %>
+        <div class="article-card p-6">
+          <h2 class="article-title"><%= article.title %></h2>
+          <p class="article-meta">Published Date: <span class="published-date" data-date="<%= article.published_at %>"><%= article.published_at %></span></p>
+          <p class="article-meta">Author: <%= article.author_name %></p>
+          <a href="/articles/<%= article.id %>" class="read-more-link block mt-2">Read More <i class="fas fa-chevron-right ml-1"></i></a>
+        </div>
+        <% }); %>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>&copy; <%= settings.blog_title %>. All rights reserved.</div>
+    </footer>
+
+    <!-- JavaScript for Date Formatting -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var publishedDates = document.querySelectorAll(".published-date");
+        publishedDates.forEach(function (dateElement) {
+          var date = dateElement.getAttribute("data-date");
+          var formattedDate = dateFns.formatDistanceToNow(new Date(date.replace(" ", "T") + "Z"), { addSuffix: true });
+          dateElement.textContent = formattedDate;
+        });
+      });
+    </script>
+  </body>
+</html>
