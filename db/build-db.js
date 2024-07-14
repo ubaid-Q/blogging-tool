@@ -3,12 +3,9 @@ import { dirname, resolve } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
-import promptSync from 'prompt-sync'; // Import prompt-sync for synchronous input
 import { fileURLToPath } from 'url';
 
 dotenv.config(); // Load environment variables from .env file
-
-const prompt = promptSync(); // Create an instance of prompt-sync
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -31,34 +28,17 @@ async function initializeDatabase() {
 }
 
 async function seedInitialData() {
-  // Prompt for author and blog settings interactively
-  let AUTHOR_NAME = prompt('Enter Author Name: ');
-  let AUTHOR_EMAIL = '';
-  let BLOG_TITLE = '';
-  let PASSWORD = '';
-
-  // Validate and prompt for email until valid format
-  while (!AUTHOR_EMAIL) {
-    AUTHOR_EMAIL = prompt('Enter Author Email: ', {
-      limitMessage: 'Please enter a valid email address.',
-    });
-  }
-
-  // Prompt for blog title
-  while (!BLOG_TITLE) {
-    BLOG_TITLE = prompt('Enter Blog Title: ');
-  }
-
-  // Validate and prompt for password until meets requirements
-  while (!PASSWORD) {
-    PASSWORD = prompt('Enter Password (at least 8 characters): ', {
-      echo: '*',
-      min: 8, // Minimum password length
-      limitMessage: 'Password must be at least 8 characters long.',
-    });
-  }
+  // Retrieve initial data from environment variables
+  const AUTHOR_NAME = process.env.AUTHOR_NAME;
+  const AUTHOR_EMAIL = process.env.AUTHOR_EMAIL;
+  const BLOG_TITLE = process.env.BLOG_TITLE;
+  const PASSWORD = process.env.PASSWORD;
 
   try {
+    if (!AUTHOR_NAME || !AUTHOR_EMAIL || !BLOG_TITLE || !PASSWORD) {
+      throw new Error('Missing required environment variables for seeding initial data.');
+    }
+
     const hashedPassword = await bcrypt.hash(PASSWORD, saltRounds);
 
     const insertAuthor = db.prepare('INSERT INTO authors (name, email, password) VALUES (?, ?, ?)');
