@@ -3,10 +3,12 @@ import { dirname, resolve } from 'path';
 import { existsSync, readFileSync } from 'fs';
 import dotenv from 'dotenv';
 import bcrypt from 'bcrypt';
+import promptSync from 'prompt-sync'; // Import prompt-sync for synchronous input
 import { fileURLToPath } from 'url';
-import readlineSync from 'readline-sync'; // Import readline-sync for synchronous input
 
 dotenv.config(); // Load environment variables from .env file
+
+const prompt = promptSync(); // Create an instance of prompt-sync
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -30,27 +32,27 @@ async function initializeDatabase() {
 
 async function seedInitialData() {
   // Prompt for author and blog settings interactively
-  let AUTHOR_NAME = readlineSync.question('Enter Author Name: ');
+  let AUTHOR_NAME = prompt('Enter Author Name: ');
   let AUTHOR_EMAIL = '';
   let BLOG_TITLE = '';
   let PASSWORD = '';
 
   // Validate and prompt for email until valid format
   while (!AUTHOR_EMAIL) {
-    AUTHOR_EMAIL = readlineSync.questionEMail('Enter Author Email: ', {
+    AUTHOR_EMAIL = prompt('Enter Author Email: ', {
       limitMessage: 'Please enter a valid email address.',
     });
   }
 
   // Prompt for blog title
   while (!BLOG_TITLE) {
-    BLOG_TITLE = readlineSync.question('Enter Blog Title: ');
+    BLOG_TITLE = prompt('Enter Blog Title: ');
   }
 
   // Validate and prompt for password until meets requirements
   while (!PASSWORD) {
-    PASSWORD = readlineSync.question('Enter Password (at least 8 characters): ', {
-      hideEchoBack: true, // Hide user input for password
+    PASSWORD = prompt('Enter Password (at least 8 characters): ', {
+      echo: '*',
       min: 8, // Minimum password length
       limitMessage: 'Password must be at least 8 characters long.',
     });
